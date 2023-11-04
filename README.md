@@ -11,9 +11,10 @@ To start farmOS project using DDEV, run the following commands:
 ```shell
 mkdir farmos
 cd farmos
+FARMOS_VERSION=3 # 2 or 3
 ddev config --project-type=php
-ddev get wotnak/ddev-farmos --version=2
-ddev composer create farmos/project:2.x-dev
+ddev get wotnak/ddev-farmos --version=$FARMOS_VERSION
+ddev composer create farmos/project:$FARMOS_VERSION.x-dev
 ddev drush site:install farm --account-name=admin --account-pass=admin -y
 ddev launch
 ```
