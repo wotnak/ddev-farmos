@@ -1,14 +1,13 @@
 setup() {
   set -eu -o pipefail
   export DIR="$( cd "$( dirname "$BATS_TEST_FILENAME" )" >/dev/null 2>&1 && pwd )/.."
-  export TESTDIR=~/tmp/test-addon-template
+  export TESTDIR=~/tmp/test-farmos-ddev-addon
   mkdir -p $TESTDIR
-  export PROJNAME=test-addon-template
+  export PROJNAME=test-farmos-ddev-addon
   export DDEV_NON_INTERACTIVE=true
   ddev delete -Oy ${PROJNAME} >/dev/null 2>&1 || true
   cd "${TESTDIR}"
-  ddev config --project-name=${PROJNAME}
-  ddev start -y >/dev/null
+  ddev config --project-name=${PROJNAME} --project-type=php
 }
 
 health_checks() {
@@ -36,9 +35,8 @@ teardown() {
 @test "install from release" {
   set -eu -o pipefail
   cd ${TESTDIR} || ( printf "unable to cd to ${TESTDIR}\n" && exit 1 )
-  echo "# ddev get ddev/ddev-addon-template with project ${PROJNAME} in ${TESTDIR} ($(pwd))" >&3
-  ddev get ddev/ddev-addon-template
+  echo "# ddev get wotnak/ddev-farmos with project ${PROJNAME} in ${TESTDIR} ($(pwd))" >&3
+  ddev get wotnak/ddev-farmos
   ddev restart >/dev/null
   health_checks
 }
-
