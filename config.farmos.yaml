@@ -1,0 +1,15 @@
+#ddev-generated
+type: drupal9
+docroot: web
+php_version: "8.1"
+webserver_type: apache-fpm
+database:
+  type: postgres
+  version: "15"
+hooks:
+  post-start:
+    - exec: |-
+        if ! [ -f ./web/sites/default/settings.php ] || grep -q "#ddev-generated" ./web/sites/default/settings.php; then
+          cp -TR /mnt/ddev_config/farmos/settings.php /var/www/html/web/sites/default/settings.php
+          mkdir -p private_files
+        fi

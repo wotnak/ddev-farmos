@@ -1,0 +1,2 @@
+#ddev-generated
+* * * * * IS_DDEV_PROJECT=true /var/www/html/vendor/bin/drush cron | tee -a /var/www/html/cron-log.txt
