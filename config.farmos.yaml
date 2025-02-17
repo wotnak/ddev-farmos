@@ -1,7 +1,7 @@
 #ddev-generated
 type: drupal10
 docroot: web
-php_version: "8.2"
+php_version: "8.3"
 webserver_type: apache-fpm
 database:
   type: postgres
