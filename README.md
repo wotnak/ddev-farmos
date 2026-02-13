@@ -14,7 +14,7 @@ cd farmos
 ddev config --project-type=php
 ddev add-on get wotnak/ddev-farmos
 ddev restart
-ddev composer create farmos/project:4.x-dev
+ddev composer create-project farmos/project:4.x-dev
 ddev drush site:install farm --account-name=admin --account-pass=admin -y
 ddev launch
 ```

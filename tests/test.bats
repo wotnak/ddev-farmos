@@ -38,12 +38,25 @@ setup() {
 
 health_checks() {
   # Install farmOS v4
-  run ddev composer create farmos/project:4.x-dev
+  run ddev composer create-project farmos/project:4.x-dev --no-interaction --no-install
+  allowedPlugins=(
+    "composer/installers"
+    "cweagans/composer-patches"
+    "dealerdirect/phpcodesniffer-composer-installer"
+    "drupal/core-composer-scaffold"
+    "oomphinc/composer-installers-extender"
+    "phpstan/extension-installer"
+    "wikimedia/composer-merge-plugin"
+  )
+  for plugin in ${allowedPlugins[@]}; do
+    run composer config --no-plugins allow-plugins.$plugin true
+  done
+  run composer install --no-interaction
   run ddev drush site:install farm --account-name=admin --account-pass=admin -y
 
   # Verify farmOS is installed
   run curl -sfI https://${PROJNAME}.ddev.site
-  assert_output --partial "farmOS"
+  assert_output --partial "Powered by farmOS"
 }
 
 teardown() {
