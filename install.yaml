@@ -2,9 +2,9 @@ name: ddev-farmos
 ddev_version_constraint: '>= v1.24.10'
 
 pre_install_actions:
-  - ddev get ddev/ddev-cron
-  - ddev get ddev/ddev-adminer
-  - ddev get wotnak/ddev-php-geos
+  - ddev add-on get ddev/ddev-cron
+  - ddev add-on get ddev/ddev-adminer
+  - ddev add-on get wotnak/ddev-php-geos
 
 project_files:
 - config.farmos.yaml
