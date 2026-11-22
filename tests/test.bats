@@ -39,6 +39,7 @@ setup() {
 health_checks() {
   # Install farmOS v4
   run ddev composer create-project farmos/project:4.x-dev --no-interaction --no-install
+  assert_success
   allowedPlugins=(
     "composer/installers"
     "cweagans/composer-patches"
@@ -48,11 +49,14 @@ health_checks() {
     "phpstan/extension-installer"
     "wikimedia/composer-merge-plugin"
   )
-  for plugin in ${allowedPlugins[@]}; do
-    run composer config --no-plugins allow-plugins.$plugin true
+  for plugin in "${allowedPlugins[@]}"; do
+    run ddev composer config --no-plugins "allow-plugins.$plugin" true
+    assert_success
   done
-  run composer install --no-interaction
+  run ddev composer install --no-interaction
+  assert_success
   run ddev drush site:install farm --account-name=admin --account-pass=admin -y
+  assert_success
 
   # Verify farmOS is installed
   run curl -sfI https://${PROJNAME}.ddev.site
