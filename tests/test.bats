@@ -60,10 +60,45 @@ health_checks() {
   run ddev drush site:install farm --account-name=admin --account-pass=admin -y
   assert_success
 
-  # Verify farmOS is installed
-  run curl --fail --silent --show-error "https://${PROJNAME}.ddev.site/user/login"
+  # Verify the installed profile.
+  run ddev drush php:eval 'echo \Drupal::config("core.extension")->get("profile");'
   assert_success
-  assert_output --partial 'Powered by <a href="https://farmOS.org">farmOS</a>'
+  assert_output 'farm'
+
+  check_dashboard_access
+}
+
+check_dashboard_access() {
+  local site_url="https://${PROJNAME}.ddev.site"
+  local cookie_jar="${BATS_TEST_TMPDIR}/cookies"
+
+  run curl --fail --silent --show-error --cookie-jar "$cookie_jar" \
+    --output .ddev/test-login.html "$site_url/user/login"
+  assert_success
+
+  run ddev exec --raw -- php -r '
+    $document = \Dom\HTMLDocument::createFromFile($argv[1]);
+    $fields = [];
+    foreach ($document->querySelectorAll("form#user-login-form input[type=hidden][name]") as $input) {
+      $fields[$input->getAttribute("name")] = $input->getAttribute("value");
+    }
+    if (($fields["form_id"] ?? null) !== "user_login_form" || empty($fields["form_build_id"])) {
+      fwrite(STDERR, "The login form is missing its hidden fields.\n");
+      exit(1);
+    }
+    echo http_build_query($fields);
+  ' /mnt/ddev_config/test-login.html
+  assert_success
+  local login_fields="$output"
+
+  run curl --fail --silent --show-error --cookie "$cookie_jar" --cookie-jar "$cookie_jar" \
+    --data "$login_fields" --data-urlencode 'name=admin' --data-urlencode 'pass=admin' \
+    --data-urlencode 'op=Log in' "$site_url/user/login"
+  assert_success
+
+  run curl --fail --silent --show-error --cookie "$cookie_jar" "$site_url/dashboard"
+  assert_success
+  assert_output --partial 'Welcome to farmOS'
 }
 
 teardown() {
