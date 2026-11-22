@@ -8,5 +8,5 @@ pre_install_actions:
 
 project_files:
 - config.farmos.yaml
+- farmos/configure-private-files.php
 - web-build/farmos.cron
-- farmos/settings.php
