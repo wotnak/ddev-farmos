@@ -96,7 +96,11 @@ check_dashboard_access() {
     --data-urlencode 'op=Log in' "$site_url/user/login"
   assert_success
 
-  run curl --fail --silent --show-error --cookie "$cookie_jar" "$site_url/dashboard"
+  run curl --fail-with-body --silent --show-error --cookie "$cookie_jar" "$site_url/dashboard"
+  if [ "$status" -ne 0 ]; then
+    ddev logs --tail 50 >&2 || true
+    ddev drush watchdog:show --count=5 --severity-min=Error --extended >&2 || true
+  fi
   assert_success
   assert_output --partial 'Welcome to farmOS'
 }
