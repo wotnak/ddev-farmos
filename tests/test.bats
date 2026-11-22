@@ -32,6 +32,7 @@ setup() {
   export TESTDIR PROJNAME
   export DDEV_NONINTERACTIVE=true
   export DDEV_NO_INSTRUMENTATION=true
+  export CI=true
   cd "${TESTDIR}"
   run ddev config --project-name="${PROJNAME}" --project-tld=ddev.site --project-type=php
   assert_success
