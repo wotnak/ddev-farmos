@@ -59,8 +59,9 @@ health_checks() {
   assert_success
 
   # Verify farmOS is installed
-  run curl -sfI https://${PROJNAME}.ddev.site
-  assert_output --partial "Powered by farmOS"
+  run curl --fail --silent --show-error "https://${PROJNAME}.ddev.site/user/login"
+  assert_success
+  assert_output --partial 'Powered by <a href="https://farmOS.org">farmOS</a>'
 }
 
 teardown() {
